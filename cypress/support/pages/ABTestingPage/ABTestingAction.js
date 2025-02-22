@@ -1,25 +1,34 @@
-import ABTestingPage from './ABTestingPage.js';
-
-const aBTestingPage = new ABTestingPage();
-
 export default class ABTestingAction {
-
-    // Verify Page Title
-    static verifyTitle(expectedData) {
-        aBTestingPage.getTitle.should('be.visible')
-            .invoke('text')
-            .then(text => expect(text.trim()).to.equal(expectedData));
-    }
-
-    // Verify Page Content
-    static verifyContent(expectedData) {
-        aBTestingPage.getContent.should('be.visible')
-            .invoke('text')
-            .then(text => expect(text.trim()).to.equal(expectedData));
-    }
-
-    // Verify URL
+  
     static verifyURL() {
-        cy.url().should('include', '/abtest');
+      cy.url().should('include', '/abtest');
     }
-}
+  
+    static verifyTitle(expectedTitle) {
+      cy.get('h3').should('have.text', expectedTitle);
+    }
+  
+    // ✅ Hàm duy nhất để verify content & ghi file nếu sai
+    static verifyAndHandleContent(expectedTitle, expectedContent, filePath = 'cypress/fixtures/actualData/TC_001_ABTesting.json') {
+      cy.get('h3').should('have.text', expectedTitle);
+      
+      cy.get('.example p').invoke('text').then((actualContent) => {
+        const trimmedActualContent = actualContent.trim(); // ✅ Trim dữ liệu thực tế
+        const trimmedExpectedContent = expectedContent.trim(); // ✅ Trim dữ liệu mong đợi
+        
+        cy.wrap(trimmedActualContent).should('eq', trimmedExpectedContent).then((isMatch) => {
+          if (!isMatch) {
+            cy.log('❌ Content mismatch! Saving actual data...');
+            
+            cy.writeFile(filePath, {
+              title: expectedTitle, 
+              content: trimmedActualContent // ✅ Ghi file với nội dung đã trim
+            });
+  
+            throw new Error(`Expected content: "${trimmedExpectedContent}", but found: "${trimmedActualContent}"`);
+          }
+        });
+      });
+    }
+  }
+  

@@ -1,6 +1,7 @@
 import HomeAction from '../../support/pages/HomePage/HomeAction';
 import ABTestingAction from '../../support/pages/ABTestingPage/ABTestingAction';
-import testData from '../../fixtures/testData/TC_001_ABTesting.json'; // ✅ Corrected Import
+import testData from '../../fixtures/testData/TC_001_ABTesting.json'; // Expected data
+import expectedData from '../../fixtures/expectedData/Expected_TC_001_ABTesting.json'; // Expected data
 
 describe('TC_001 - Verify A/B Testing Page', () => {
 
@@ -15,12 +16,8 @@ describe('TC_001 - Verify A/B Testing Page', () => {
     // Verify A/B Testing Page URL
     ABTestingAction.verifyURL();
 
-    // Verify A/B Testing Page Title
-    ABTestingAction.verifyTitle(testData.title);
-
-    // Verify A/B Testing Page Content
-    ABTestingAction.verifyContent(testData.content);
-
+    // ✅ Chỉ cần gọi 1 hàm duy nhất để kiểm tra title & content
+    ABTestingAction.verifyAndHandleContent(expectedData.title, expectedData.content);
   });
 
 });

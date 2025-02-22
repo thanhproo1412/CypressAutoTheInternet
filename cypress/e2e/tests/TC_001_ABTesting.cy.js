@@ -1,32 +1,26 @@
-import LoginAction from '../../support/pages/LoginPage/LoginAction';
-import CalendarAction from '../../support/pages/CalendarPage/CalendarAction';
-import JobDetailAction from '../../support/pages/JobDetailPage/JobDetailAction';
-import privateData from '../../fixtures/testData/PrivateData.json';
-import jobData from '../../fixtures/testData/TC_002_CreateJob.json';
+import HomeAction from '../../support/pages/HomePage/HomeAction';
+import ABTestingAction from '../../support/pages/ABTestingPage/ABTestingAction';
+import testData from '../../fixtures/testData/TC_001_ABTesting.json'; // ✅ Corrected Import
 
+describe('TC_001 - Verify A/B Testing Page', () => {
 
-console.log(privateData)
+  it('Should navigate to A/B Testing page and verify content', () => {
 
-describe('Create Job', () => {
-  it('Just create a new job in calendar', () => {
+    // Navigate to the home page
+    cy.visit('https://the-internet.herokuapp.com/');
 
-    // Nav to home page
-    cy.visit(privateData.url);
+    // Click A/B Testing button
+    HomeAction.clickABTestingBtn();
 
-    // Nav to AB Testing page
-    const loginAction = new LoginAction();
-    loginAction.login(privateData.username, privateData.password)
+    // Verify A/B Testing Page URL
+    ABTestingAction.verifyURL();
 
-    const calendarAction = new CalendarAction()
-    const jobDetailAction = new JobDetailAction()
+    // Verify A/B Testing Page Title
+    ABTestingAction.verifyTitle(testData.title);
 
-    calendarAction.selectAgendar('Day')
-    calendarAction.openModalAddJob(jobData.time, jobData.jobType)
-    jobDetailAction.addJob(jobData.newJob)
-    jobDetailAction.saveJob()
-    jobDetailAction.closeJob()
-
-
+    // Verify A/B Testing Page Content
+    ABTestingAction.verifyContent(testData.content);
 
   });
+
 });
